@@ -94,8 +94,7 @@ export function TextInput({
               if (isUriImage(feature.uri)) {
                 const res = await downloadAndResize({
                   uri: feature.uri,
-                  width: POST_IMG_MAX.width,
-                  height: POST_IMG_MAX.height,
+                  maxPixels: POST_IMG_MAX.maxPixels,
                   mode: 'contain',
                   maxSize: POST_IMG_MAX.size,
                   timeout: 15e3,
