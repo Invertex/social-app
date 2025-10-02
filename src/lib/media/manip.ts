@@ -48,8 +48,7 @@ export async function compressIfNeeded(
 
 export interface DownloadAndResizeOpts {
   uri: string
-  width: number
-  height: number
+  maxPixels: number
   mode: 'contain' | 'cover' | 'stretch'
   maxSize: number
   timeout: number
