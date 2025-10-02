@@ -94,8 +94,7 @@ export const STAGING_FEEDS = [
 ]
 
 export const POST_IMG_MAX = {
-  width: 2000,
-  height: 2000,
+  maxPixels: 4000000, // 2000x2000. 2560x1440 (2K image) is 3,686,400, fitting the limit but avoiding resize
   size: 1000000,
 }
 
