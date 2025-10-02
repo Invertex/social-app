@@ -352,21 +352,33 @@ export function getResizedDimensions(originalDims: {
   width: number
   height: number
 }) {
-  if (
-    originalDims.width <= POST_IMG_MAX.width &&
-    originalDims.height <= POST_IMG_MAX.height
-  ) {
+  const largestSize = Math.max(originalDims.width, originalDims.height)
+  // Prevent possible .JPG encoding error from exceeding dimension limits
+  if(largestSize > 65500) { 
+    const overflowRatio = 65500 / largestSize
+    originalDims.width = Math.round(originalDims.width * overflowRatio)
+    originalDims.height = Math.round(originalDims.height * overflowRatio)
+  }
+  // Don't mess with image scale if the total pixel count is within limits, preventing unnecessary downscaling
+  const originalPixCnt = originalDims.width * originalDims.height
+  if (originalPixCnt <= POST_IMG_MAX.maxPixels) { 
     return originalDims
   }
 
-  const ratio = Math.min(
-    POST_IMG_MAX.width / originalDims.width,
-    POST_IMG_MAX.height / originalDims.height,
-  )
-
-  return {
-    width: Math.round(originalDims.width * ratio),
-    height: Math.round(originalDims.height * ratio),
+  const ratio = originalDims.width / originalDims.height
+  // Ensure accurate aspect-ratio scaling by switching math according to largest dimension
+  if(originalDims.width > originalDims.height) {
+    const scaledHeight = Math.floor(Math.sqrt(POST_IMG_MAX.maxPixels / ratio))
+    return {
+      width: Math.floor(scaledHeight * ratio),
+      height: scaledHeight,
+    }
+  } else {
+    const scaledWidth = Math.floor(Math.sqrt(POST_IMG_MAX.maxPixels * ratio))
+    return {
+      width: scaledWidth,
+      height: Math.floor(scaledWidth / ratio),
+    }
   }
 }
 
